@@ -1,4 +1,4 @@
-import { Button } from "../../uiParts/button/Button.jsx";
+import { TagsInput } from "../../uiParts/tagsInput";
 import styled from "styled-components";
 import { useState } from "react";
 
@@ -12,7 +12,7 @@ const samplecategories = {
 
 export const TagSelector = ({ categories = samplecategories, onSelect }) => {
   const [selectedTags, setSelectedTags] = useState({});
-
+  const [customTag, setCustomTag] = useState({});
   const handleSelect = (category, tag) => {
     setSelectedTags((prevSelectedTags) => {
       const updatedTags = { ...prevSelectedTags };
@@ -45,6 +45,21 @@ export const TagSelector = ({ categories = samplecategories, onSelect }) => {
       });
     }
   };
+  const handleAddCustomTag = (category) => {
+    if (customTag[category] && customTag[category].trim() !== "") {
+      // 新しいカスタムタグをカテゴリーに追加
+      const newTags = {
+        ...categories,
+        [category]: [...categories[category], customTag[category]],
+      };
+      categories[category] = newTags[category]; // カテゴリーのタグリストを更新
+      setCustomTag({ ...customTag, [category]: "" }); // 入力フィールドをクリア
+    }
+  };
+
+  const handleCustomTagChange = (category, value) => {
+    setCustomTag({ ...customTag, [category]: value });
+  };
 
   const renderSelectedTags = () => {
     return Object.entries(selectedTags).map(([category, tags]) => (
@@ -58,21 +73,15 @@ export const TagSelector = ({ categories = samplecategories, onSelect }) => {
         {Object.entries(categories).map(([category, tags]) => (
           <div key={category}>
             <h3>{category}</h3>
-            <ButtonWrapper>
-              {tags.map((tag) => (
-                <Button
-                  key={tag}
-                  primary={
-                    selectedTags[category] &&
-                    selectedTags[category].includes(tag)
-                  }
-                  label={tag}
-                  onClick={() => handleSelect(category, tag)}
-                >
-                  {tag}
-                </Button>
-              ))}
-            </ButtonWrapper>
+            <TagsInput
+              tags={tags}
+              selectedTags={selectedTags}
+              category={category}
+              handleSelect={handleSelect}
+              customTag={customTag}
+              handleCustomTagChange={handleCustomTagChange}
+              handleAddCustomTag={handleAddCustomTag}
+            />
           </div>
         ))}
         <div>{renderSelectedTags()}</div>
@@ -80,10 +89,6 @@ export const TagSelector = ({ categories = samplecategories, onSelect }) => {
     </ContentWrapper>
   );
 };
-const ButtonWrapper = styled.div`
-  display: flex;
-  gap: 5px;
-`;
 
 const ContentWrapper = styled.div`
   border: 2px solid #1ea7fd;
