@@ -3,9 +3,14 @@ import { TagSelector } from "../../project/tagSelector";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import OpenAI from "openai";
+import DatePicker, { registerLocale } from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import ja from "date-fns/locale/ja";
+registerLocale("ja", ja);
 
 export const CreateDiary = () => {
   const history = useNavigate();
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const openai = new OpenAI({
     apiKey: process.env.REACT_APP_OPENAI_API_KEY,
     dangerouslyAllowBrowser: true,
@@ -82,12 +87,11 @@ export const CreateDiary = () => {
       const response = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [{ role: "user", content: prompt }],
-        max_tokens: 150,
       });
 
       const diaryContent = response.choices[0].message.content;
 
-      history("/edit-diary", { state: { diaryContent } });
+      history("/edit-diary", { state: { diaryContent, selectedDate } });
     } catch (error) {
       console.error(error);
     }
@@ -95,6 +99,18 @@ export const CreateDiary = () => {
 
   return (
     <Wrapper>
+      <DatePickerWrapper className={"ReservationCalendar"}>
+        <p>日付:</p>
+        <div>
+          <DatePicker
+            locale="ja"
+            selected={selectedDate}
+            dateFormatCalendar="yyyy年 MM月"
+            dateFormat="yyyy/MM/dd"
+            onChange={(date) => setSelectedDate(date)}
+          />
+        </div>
+      </DatePickerWrapper>
       {tagSelectors.map((selector) => (
         <div key={selector.id}>
           {selector.component}
@@ -112,4 +128,10 @@ const Wrapper = styled.div`
   flex-direction: column;
   gap: 10px;
   padding: 20px 40px;
+`;
+
+const DatePickerWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
 `;

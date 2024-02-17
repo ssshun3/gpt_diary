@@ -23,7 +23,7 @@ export const Register = () => {
     await createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
         // const user = userCredential.user;
-        history.push("/auth/login");
+        history("/auth/login");
       })
       .catch((error) => {
         if (error.code === "auth/email-already-in-use") {

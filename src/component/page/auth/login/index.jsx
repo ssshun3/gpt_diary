@@ -24,7 +24,7 @@ export const Login = () => {
     await signInWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
         const user = userCredential.user;
-        history.push("/");
+        history("/");
       })
       .catch((error) => {
         if (error.code === "auth/user-not-found") {
