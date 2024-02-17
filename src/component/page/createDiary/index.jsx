@@ -91,7 +91,7 @@ export const CreateDiary = () => {
 
       const diaryContent = response.choices[0].message.content;
 
-      history("/edit-diary", { state: { diaryContent, selectedDate } });
+      history("/submit-diary", { state: { diaryContent, selectedDate } });
     } catch (error) {
       console.error(error);
     }

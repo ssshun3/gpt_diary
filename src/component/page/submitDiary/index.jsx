@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebase";
 import { useAppContext } from "../../../context/AppContext";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -9,9 +9,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import ja from "date-fns/locale/ja";
 registerLocale("ja", ja);
 
-export const EditDiary = () => {
+export const SubmitDiary = () => {
   const { userID } = useAppContext();
-  const [diaryId, setDiaryId] = useState(null);
+
   const navigate = useNavigate();
   const location = useLocation();
   const [diaryContent, setDiaryContent] = useState("");
@@ -21,10 +21,8 @@ export const EditDiary = () => {
     if (location.state) {
       setDiaryContent(location.state.diaryContent || "");
       setSelectedDate(new Date(location.state.selectedDate) || new Date());
-      setDiaryId(location.state.diaryId || null);
     }
   }, [location]);
-
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
@@ -42,29 +40,21 @@ export const EditDiary = () => {
     }
   }, [diaryContent]);
   const onSubmit = async () => {
-    if (!diaryId) {
-      console.error("No diaryId provided for update");
-      return;
-    }
-
-    const diaryRef = doc(db, "diaries", diaryId); // diaryId を使用してドキュメントの参照を取得
-
     try {
-      await updateDoc(diaryRef, {
+      await addDoc(collection(db, "diaries"), {
         userId: userID,
         date: formatDate(selectedDate),
         content: diaryContent,
-        updatedAt: serverTimestamp(), // 更新日時
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
       });
-      navigate("/"); // 更新後はホームページに戻る
+      navigate("/");
     } catch (error) {
-      console.error("Error updating document: ", error);
+      console.error("Error adding document: ", error);
     }
   };
-
   return (
     <Wrapper>
-      <h1>日記を編集</h1>
       <p>日付:</p>
       <div>
         <DatePicker
@@ -80,7 +70,7 @@ export const EditDiary = () => {
         value={diaryContent}
         onChange={(e) => setDiaryContent(e.target.value)}
       />
-      <button onClick={() => onSubmit()}>更新</button>
+      <button onClick={() => onSubmit()}>保存</button>
     </Wrapper>
   );
 };

@@ -6,6 +6,7 @@ import { Login } from "./component/page/auth/login";
 import { EditDiary } from "./component/page/editDiary";
 import { Home } from "./component/page/home";
 import { AppProvider } from "./context/AppContext";
+import { SubmitDiary } from "./component/page/submitDiary";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/auth/register" element={<Register />} />
           <Route path="/auth/login" element={<Login />} />
           <Route path="/" element={<Home />} />
+          <Route path="/submit-diary" element={<SubmitDiary />} />
           <Route path="/create-diary" element={<CreateDiary />} />
           <Route path="/edit-diary" element={<EditDiary />} />
         </Routes>
