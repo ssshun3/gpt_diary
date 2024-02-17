@@ -24,14 +24,14 @@ export const CreateDiary = () => {
   ]);
 
   const addTagSelector = () => {
-    const newId = tagSelectors.length; // 新しいIDを生成
+    const newId = tagSelectors.length;
     const newSelector = {
       id: newId,
       component: (
         <TagSelector
           key={newId}
           onSelect={(category, tag) => handleTagSelect(newId, category, tag)}
-          onTagsChange={(tags) => handleTagsChangeFromChild(newId, tags)} // ここで子からの変更を捉える
+          onTagsChange={(tags) => handleTagsChangeFromChild(newId, tags)}
         />
       ),
     };
@@ -55,9 +55,42 @@ export const CreateDiary = () => {
   const handleTagSelect = (id, category, tag) => {
     console.log(`TagSelector ${id} - Category: ${category}, Tag: ${tag}`);
   };
-  const handleSubmitTags = () => {
-    console.log(selectedTagsFromChildren);
-    history("/edit-diary");
+  const handleSubmitTags = async () => {
+    const promptText = Object.entries(selectedTagsFromChildren)
+      .map(([key, value]) => {
+        const formattedValue =
+          typeof value === "object" && value !== null
+            ? Object.entries(value)
+                .map(
+                  ([subKey, subValue]) =>
+                    `${subKey}: ${
+                      Array.isArray(subValue) ? subValue.join(", ") : subValue
+                    }`
+                )
+                .join(", ")
+            : Array.isArray(value)
+            ? value.join(", ")
+            : value;
+        return `${key}: ${formattedValue}`;
+      })
+      .join("\n");
+
+    console.log(promptText);
+    const prompt = `次のキーワードを使用して日記を作成して下さい:\n${promptText}`;
+
+    try {
+      const response = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 150,
+      });
+
+      const diaryContent = response.choices[0].message.content;
+
+      history("/edit-diary", { state: { diaryContent } });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
