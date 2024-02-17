@@ -55,9 +55,6 @@ export const CreateDiary = () => {
     }));
   };
 
-  // const handleTagSelect = (id, category, tag) => {
-  //   console.log(`TagSelector ${id} - Category: ${category}, Tag: ${tag}`);
-  // };
   const handleSubmitTags = async () => {
     const promptText = Object.entries(selectedTagsFromChildren)
       .map(([key, value]) => {
@@ -78,7 +75,7 @@ export const CreateDiary = () => {
       })
       .join("\n");
 
-    const prompt = `次のキーワードを使用して日記を作成して下さい:\n${promptText}`;
+    const prompt = `次のキーワードを使用して日記を作成して下さい。返答の制限として返す内容は日記の内容のみです。日付や日記のタイトルは不要です。:\n${promptText}`;
 
     try {
       const response = await openai.chat.completions.create({
