@@ -48,7 +48,6 @@ export const Home = () => {
   const handleDeleteDiary = async (diaryId) => {
     try {
       await deleteDoc(doc(db, "diaries", diaryId));
-      console.log("Diary deleted successfully");
     } catch (error) {
       console.error("Error deleting diary: ", error);
     }

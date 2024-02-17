@@ -21,7 +21,7 @@ export const CreateDiary = () => {
       component: (
         <TagSelector
           key={0}
-          onSelect={(category, tag) => handleTagSelect(0, category, tag)}
+          // onSelect={(category, tag) => handleTagSelect(0, category, tag)}
           onTagsChange={(tags) => handleTagsChangeFromChild(0, tags)}
         />
       ),
@@ -35,7 +35,7 @@ export const CreateDiary = () => {
       component: (
         <TagSelector
           key={newId}
-          onSelect={(category, tag) => handleTagSelect(newId, category, tag)}
+          // onSelect={(category, tag) => handleTagSelect(newId, category, tag)}
           onTagsChange={(tags) => handleTagsChangeFromChild(newId, tags)}
         />
       ),
@@ -57,9 +57,9 @@ export const CreateDiary = () => {
     }));
   };
 
-  const handleTagSelect = (id, category, tag) => {
-    console.log(`TagSelector ${id} - Category: ${category}, Tag: ${tag}`);
-  };
+  // const handleTagSelect = (id, category, tag) => {
+  //   console.log(`TagSelector ${id} - Category: ${category}, Tag: ${tag}`);
+  // };
   const handleSubmitTags = async () => {
     const promptText = Object.entries(selectedTagsFromChildren)
       .map(([key, value]) => {
@@ -80,7 +80,6 @@ export const CreateDiary = () => {
       })
       .join("\n");
 
-    console.log(promptText);
     const prompt = `次のキーワードを使用して日記を作成して下さい:\n${promptText}`;
 
     try {

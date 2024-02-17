@@ -47,16 +47,16 @@ export const EditDiary = () => {
       return;
     }
 
-    const diaryRef = doc(db, "diaries", diaryId); // diaryId を使用してドキュメントの参照を取得
+    const diaryRef = doc(db, "diaries", diaryId);
 
     try {
       await updateDoc(diaryRef, {
         userId: userID,
         date: formatDate(selectedDate),
         content: diaryContent,
-        updatedAt: serverTimestamp(), // 更新日時
+        updatedAt: serverTimestamp(),
       });
-      navigate("/"); // 更新後はホームページに戻る
+      navigate("/");
     } catch (error) {
       console.error("Error updating document: ", error);
     }
