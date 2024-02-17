@@ -21,7 +21,6 @@ export const CreateDiary = () => {
       component: (
         <TagSelector
           key={0}
-          // onSelect={(category, tag) => handleTagSelect(0, category, tag)}
           onTagsChange={(tags) => handleTagsChangeFromChild(0, tags)}
         />
       ),
@@ -35,7 +34,6 @@ export const CreateDiary = () => {
       component: (
         <TagSelector
           key={newId}
-          // onSelect={(category, tag) => handleTagSelect(newId, category, tag)}
           onTagsChange={(tags) => handleTagsChangeFromChild(newId, tags)}
         />
       ),

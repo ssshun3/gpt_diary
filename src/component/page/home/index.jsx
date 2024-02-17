@@ -10,7 +10,7 @@ import {
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { db } from "../../../firebase";
+import { auth, db } from "../../../firebase";
 import { useAppContext } from "../../../context/AppContext";
 
 export const Home = () => {
@@ -52,9 +52,21 @@ export const Home = () => {
       console.error("Error deleting diary: ", error);
     }
   };
+  const handleLogout = () => {
+    auth
+      .signOut()
+      .then(() => {
+        navigate("/auth/login");
+      })
+      .catch((error) => {
+        console.error("Logout error", error);
+      });
+  };
 
   return (
     <div>
+      <button onClick={handleLogout}>ログアウト</button>
+      {user && <p>{user.email}</p>}
       <h1>Home</h1>
       {diaries.map((diary) => (
         <div key={diary.id}>

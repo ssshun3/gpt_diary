@@ -17,10 +17,26 @@ export const EditDiary = () => {
   const [diaryContent, setDiaryContent] = useState("");
   const textareaRef = useRef(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const parseDateString = (dateString) => {
+    const datePattern = /(\d{4})年(\d{2})月(\d{2})日/;
+    const match = dateString.match(datePattern);
+
+    if (match) {
+      const year = parseInt(match[1], 10);
+      const month = parseInt(match[2], 10) - 1;
+      const day = parseInt(match[3], 10);
+
+      return new Date(year, month, day);
+    }
+
+    return new Date();
+  };
+
   useEffect(() => {
     if (location.state) {
       setDiaryContent(location.state.diaryContent || "");
-      setSelectedDate(new Date(location.state.selectedDate) || new Date());
+      const parsedDate = parseDateString(location.state.selectedDate);
+      setSelectedDate(parsedDate);
       setDiaryId(location.state.diaryId || null);
     }
   }, [location]);
