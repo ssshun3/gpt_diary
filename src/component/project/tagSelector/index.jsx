@@ -1,7 +1,6 @@
 import { TagsInput } from "../../uiParts/tagsInput";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-
 const samplecategories = {
   いつ: ["午前中", "午後", "夜"],
   どこで: ["歯医者", "学校", "自宅", "映画館"],
@@ -9,29 +8,29 @@ const samplecategories = {
   何をした: ["虫歯の治療", "勉強", "映画鑑賞"],
   どうだった: ["楽しかった", "普通", "つまらなかった"],
 };
-
-export const TagSelector = ({ categories = samplecategories, onSelect }) => {
+export const TagSelector = ({
+  categories = samplecategories,
+  onSelect,
+  onTagsChange,
+}) => {
   const [selectedTags, setSelectedTags] = useState({});
   const [customTag, setCustomTag] = useState({});
 
   useEffect(() => {
-    if (typeof onSelect === "function") {
-      onSelect(selectedTags);
+    // 選択されたタグの情報を親コンポーネントに渡す
+    if (typeof onTagsChange === "function") {
+      onTagsChange(selectedTags);
     }
-  }, [selectedTags, onSelect]);
+  }, [selectedTags, onTagsChange]);
 
   const handleSelect = (category, tag) => {
     setSelectedTags((prevSelectedTags) => {
       const updatedTags = { ...prevSelectedTags };
-
-      // カテゴリーに対する現在のタグリストを取得（存在しない場合は空の配列）
       const currentTags = updatedTags[category] || [];
 
       if (currentTags.includes(tag)) {
-        // タグが既に選択されていれば削除
         updatedTags[category] = currentTags.filter((t) => t !== tag);
       } else {
-        // タグが選択されていなければ追加
         updatedTags[category] = [...currentTags, tag];
       }
 
@@ -41,13 +40,12 @@ export const TagSelector = ({ categories = samplecategories, onSelect }) => {
 
   const handleAddCustomTag = (category) => {
     if (customTag[category] && customTag[category].trim() !== "") {
-      // 新しいカスタムタグをカテゴリーに追加
       const newTags = {
         ...categories,
         [category]: [...categories[category], customTag[category]],
       };
-      categories[category] = newTags[category]; // カテゴリーのタグリストを更新
-      setCustomTag({ ...customTag, [category]: "" }); // 入力フィールドをクリア
+      categories[category] = newTags[category];
+      setCustomTag({ ...customTag, [category]: "" });
     }
   };
 

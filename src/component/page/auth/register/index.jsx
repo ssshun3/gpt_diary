@@ -22,7 +22,7 @@ export const Register = () => {
   const onSubmit = async (data) => {
     await createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
-        const user = userCredential.user;
+        // const user = userCredential.user;
         history.push("/auth/login");
       })
       .catch((error) => {
