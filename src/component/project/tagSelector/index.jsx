@@ -1,6 +1,6 @@
 import { TagsInput } from "../../uiParts/tagsInput";
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const samplecategories = {
   いつ: ["午前中", "午後", "夜"],
@@ -13,38 +13,32 @@ const samplecategories = {
 export const TagSelector = ({ categories = samplecategories, onSelect }) => {
   const [selectedTags, setSelectedTags] = useState({});
   const [customTag, setCustomTag] = useState({});
+
+  useEffect(() => {
+    if (typeof onSelect === "function") {
+      onSelect(selectedTags);
+    }
+  }, [selectedTags, onSelect]);
+
   const handleSelect = (category, tag) => {
     setSelectedTags((prevSelectedTags) => {
       const updatedTags = { ...prevSelectedTags };
-      if (updatedTags[category]) {
-        if (updatedTags[category].includes(tag)) {
-          updatedTags[category] = updatedTags[category].filter(
-            (t) => t !== tag
-          );
-          if (updatedTags[category].length === 0) {
-            delete updatedTags[category];
-          }
-        } else {
-          updatedTags[category].push(tag);
-        }
+
+      // カテゴリーに対する現在のタグリストを取得（存在しない場合は空の配列）
+      const currentTags = updatedTags[category] || [];
+
+      if (currentTags.includes(tag)) {
+        // タグが既に選択されていれば削除
+        updatedTags[category] = currentTags.filter((t) => t !== tag);
       } else {
-        updatedTags[category] = [tag];
+        // タグが選択されていなければ追加
+        updatedTags[category] = [...currentTags, tag];
       }
+
       return updatedTags;
     });
-
-    // onSelectが関数であることを確認し、選択されたタグの現在の状態を引数として渡す
-    if (typeof onSelect === "function") {
-      onSelect({
-        ...selectedTags,
-        [category]: selectedTags[category]
-          ? selectedTags[category].includes(tag)
-            ? selectedTags[category].filter((t) => t !== tag) // タグを解除
-            : [...selectedTags[category], tag] // 新しいタグを追加
-          : [tag], // 新しいカテゴリの初回選択
-      });
-    }
   };
+
   const handleAddCustomTag = (category) => {
     if (customTag[category] && customTag[category].trim() !== "") {
       // 新しいカスタムタグをカテゴリーに追加
@@ -72,7 +66,7 @@ export const TagSelector = ({ categories = samplecategories, onSelect }) => {
       <Wrapper>
         {Object.entries(categories).map(([category, tags]) => (
           <div key={category}>
-            <h3>{category}</h3>
+            <CategoryTitle>{category}</CategoryTitle>
             <TagsInput
               tags={tags}
               selectedTags={selectedTags}
@@ -98,4 +92,8 @@ const ContentWrapper = styled.div`
 
 const Wrapper = styled.div`
   padding: 10px;
+  display: flex;
+  flex-direction: column;
 `;
+
+const CategoryTitle = styled.h3``;

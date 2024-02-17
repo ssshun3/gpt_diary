@@ -41,7 +41,7 @@ export const CreateDiary = () => {
 
   return (
     <Wrapper>
-      {tagSelectors.map((selector, index) => (
+      {tagSelectors.map((selector) => (
         <div key={selector.id}>
           {selector.component}
           <button onClick={() => removeTagSelector(selector.id)}>取消</button>
@@ -56,4 +56,5 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding: 20px 40px;
 `;
