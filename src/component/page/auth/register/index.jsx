@@ -36,6 +36,7 @@ export const Register = () => {
 
   return (
     <AuthContainer>
+      <h1>新規登録</h1>
       <AuthForm onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label>Email</label>

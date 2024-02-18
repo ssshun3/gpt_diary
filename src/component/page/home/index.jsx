@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../../../firebase";
 import { useAppContext } from "../../../context/AppContext";
+import { ConfirmModal } from "../../uiParts/modal";
 
 export const Home = () => {
   const { user, userID } = useAppContext();
@@ -62,13 +63,6 @@ export const Home = () => {
     setSortedDiaries(sorted);
   }, [sortOption, diaries]);
 
-  const handleDeleteDiary = async (diaryId) => {
-    try {
-      await deleteDoc(doc(db, "diaries", diaryId));
-    } catch (error) {
-      console.error("Error deleting diary: ", error);
-    }
-  };
   const handleLogout = () => {
     auth
       .signOut()
@@ -78,6 +72,32 @@ export const Home = () => {
       .catch((error) => {
         console.error("Logout error", error);
       });
+  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentDiaryId, setCurrentDiaryId] = useState(null);
+  const handleDeleteClick = (diaryId) => {
+    setCurrentDiaryId(diaryId);
+    setIsModalOpen(true);
+  };
+  // const handleDeleteDiary = async (diaryId) => {
+  //   try {
+  //     await deleteDoc(doc(db, "diaries", diaryId));
+  //   } catch (error) {
+  //     console.error("Error deleting diary: ", error);
+  //   }
+  // };
+  const handleConfirmDelete = async (diaryId) => {
+    try {
+      await deleteDoc(doc(db, "diaries", diaryId));
+      // モーダルを閉じるなどの後処理
+      setIsModalOpen(false);
+      setCurrentDiaryId(null);
+      // 削除後の日記リストの更新処理が必要であればここに追加
+    } catch (error) {
+      console.error("Error deleting diary: ", error);
+      setIsModalOpen(false);
+      setCurrentDiaryId(null);
+    }
   };
 
   return (
@@ -94,6 +114,12 @@ export const Home = () => {
         <option value="updated">更新順</option>
       </select>
       <button onClick={handleCreateDiaryClick}>日記を作成</button>
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        diaryId={currentDiaryId}
+      />
       {sortedDiaries.map((diary) => (
         <div key={diary.id}>
           <p>{diary.date}</p>
@@ -111,7 +137,7 @@ export const Home = () => {
           >
             編集
           </button>
-          <button onClick={() => handleDeleteDiary(diary.id)}>削除</button>
+          <button onClick={() => handleDeleteClick(diary.id)}>削除</button>
         </div>
       ))}
     </div>

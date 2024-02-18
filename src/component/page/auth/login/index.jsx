@@ -37,6 +37,7 @@ export const Login = () => {
 
   return (
     <AuthContainer>
+      <h1>ログイン</h1>
       <AuthForm onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label>Email</label>
