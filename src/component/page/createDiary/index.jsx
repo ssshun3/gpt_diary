@@ -165,15 +165,10 @@ const Wrapper = styled.div`
 `;
 
 const StyledDatePicker = styled(DatePicker)`
-  width: 100%;
-  padding: 8px 12px;
+  padding: 4px 6px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
-
-  & .react-datepicker__input-container {
-    width: 100%;
-  }
 
   & .react-datepicker__month-container {
     background-color: #f0f0f0;

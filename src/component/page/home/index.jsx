@@ -106,14 +106,16 @@ export const Home = () => {
 
   return (
     <Wrapper>
-      <UserWrapper>
-        {user && <p>{user.email}</p>}
-        <IconWithButton
-          Icon={CiLogout}
-          text="ログアウト"
-          onClick={handleLogout}
-        />
-      </UserWrapper>
+      <UserWrapperWrapper>
+        <UserWrapper>
+          {user && <p>{user.email}</p>}
+          <IconWithButton
+            Icon={CiLogout}
+            text="ログアウト"
+            onClick={handleLogout}
+          />
+        </UserWrapper>
+      </UserWrapperWrapper>
       <h1>日記一覧</h1>
       <HeaderWrapper>
         <StyledSelect
@@ -166,11 +168,17 @@ export const Home = () => {
   );
 };
 
+const UserWrapperWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
 const UserWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+  flex-direction: column;
+  width: fit-content;
+  gap: 10px;
+  align-items: flex-end;
 `;
 const StyledSelect = styled.select`
   padding: 8px 12px;
@@ -195,7 +203,7 @@ const StyledSelect = styled.select`
 
 const DiaryWrapper = styled.div`
   background-color: #f5f5f5;
-  padding: 20px;
+  padding: 15px;
   margin-bottom: 10px;
   border-radius: 8px;
   box-shadow: 2px 2px 2px 4px rgba(0, 0, 0, 0.1);

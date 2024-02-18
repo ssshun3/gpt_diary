@@ -92,16 +92,16 @@ export const EditDiary = () => {
       />
       <h1>日記を編集</h1>
       <ContentWrapper>
-        <DateWrapper>
+        <DatePickerWrapper>
           <p>日付</p>
-          <DatePicker
+          <StyledDatePicker
             locale="ja"
             selected={selectedDate}
             dateFormatCalendar="yyyy年 MM月"
             dateFormat="yyyy/MM/dd"
             onChange={handleDateChange}
           />
-        </DateWrapper>
+        </DatePickerWrapper>
         <StyledTextArea
           ref={textareaRef}
           value={diaryContent}
@@ -118,7 +118,47 @@ export const EditDiary = () => {
     </Wrapper>
   );
 };
+const StyledDatePicker = styled(DatePicker)`
+  padding: 4px 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
 
+  & .react-datepicker__month-container {
+    background-color: #f0f0f0;
+  }
+
+  & .react-datepicker__header {
+    background-color: #007bff;
+    color: white;
+  }
+
+  & .react-datepicker__day-name,
+  .react-datepicker__day,
+  .react-datepicker__time-name {
+    width: 2.5rem;
+    line-height: 2.5rem;
+    margin: 0.166rem;
+  }
+
+  & .react-datepicker__day--selected,
+  .react-datepicker__day--in-range,
+  .react-datepicker__day--in-selecting-range {
+    background-color: #007bff;
+    color: white;
+  }
+
+  & .react-datepicker__day--keyboard-selected {
+    background-color: #007bff;
+    color: white;
+  }
+`;
+
+const DatePickerWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
 const StyledTextArea = styled.textarea`
   width: 100%;
   padding: 10px;

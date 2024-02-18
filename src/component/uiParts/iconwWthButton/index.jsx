@@ -11,7 +11,7 @@ export const IconWithButton = ({ Icon, text, onClick, size = 25 }) => {
 };
 
 const Button = styled.button`
-  padding: 10px 20px;
+  padding: 5px 10px;
   font-size: 16px;
   border: 1px solid #ccc;
   cursor: pointer;
