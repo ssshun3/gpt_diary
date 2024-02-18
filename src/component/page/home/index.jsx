@@ -16,7 +16,8 @@ import { useAppContext } from "../../../context/AppContext";
 export const Home = () => {
   const { user, userID } = useAppContext();
   const navigate = useNavigate();
-
+  const [sortOption, setSortOption] = useState("default");
+  const [sortedDiaries, setSortedDiaries] = useState([]);
   const handleCreateDiaryClick = () => {
     navigate("/create-diary");
   };
@@ -45,6 +46,22 @@ export const Home = () => {
       fetchDiaries();
     }
   }, [userID]);
+  useEffect(() => {
+    let sorted = [...diaries];
+    if (sortOption === "default") {
+      sorted.sort((a, b) => b.createdAt.toDate() - a.createdAt.toDate());
+    } else if (sortOption === "date") {
+      sorted.sort((a, b) => {
+        const dateA = new Date(a.date.replace(/年|月/g, "/").replace(/日/, ""));
+        const dateB = new Date(b.date.replace(/年|月/g, "/").replace(/日/, ""));
+        return dateB - dateA;
+      });
+    } else if (sortOption === "updated") {
+      sorted.sort((a, b) => b.updatedAt.toDate() - a.updatedAt.toDate());
+    }
+    setSortedDiaries(sorted);
+  }, [sortOption, diaries]);
+
   const handleDeleteDiary = async (diaryId) => {
     try {
       await deleteDoc(doc(db, "diaries", diaryId));
@@ -65,10 +82,19 @@ export const Home = () => {
 
   return (
     <div>
-      <button onClick={handleLogout}>ログアウト</button>
       {user && <p>{user.email}</p>}
-      <h1>Home</h1>
-      {diaries.map((diary) => (
+      <button onClick={handleLogout}>ログアウト</button>
+      <h1>日記一覧</h1>
+      <select
+        value={sortOption}
+        onChange={(e) => setSortOption(e.target.value)}
+      >
+        <option value="default">作成順</option>
+        <option value="date">日付順</option>
+        <option value="updated">更新順</option>
+      </select>
+      <button onClick={handleCreateDiaryClick}>日記を作成</button>
+      {sortedDiaries.map((diary) => (
         <div key={diary.id}>
           <p>{diary.date}</p>
           <p>{diary.content}</p>
@@ -88,8 +114,6 @@ export const Home = () => {
           <button onClick={() => handleDeleteDiary(diary.id)}>削除</button>
         </div>
       ))}
-
-      <button onClick={handleCreateDiaryClick}>新規作成</button>
     </div>
   );
 };
