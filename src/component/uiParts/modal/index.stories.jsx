@@ -1,6 +1,5 @@
-// ConfirmModal.stories.js
 import React from "react";
-import { ConfirmModal } from "./"; // ConfirmModal コンポーネントのパスを適切に設定
+import { ConfirmModal } from "./";
 
 export default {
   component: ConfirmModal,

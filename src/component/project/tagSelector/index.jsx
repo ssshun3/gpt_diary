@@ -2,15 +2,41 @@ import { TagsInput } from "../../uiParts/tagsInput";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 const samplecategories = {
-  いつ: ["午前中", "午後", "夜"],
-  どこで: ["歯医者", "学校", "自宅", "映画館"],
-  誰が: ["私", "友人", "家族"],
-  何をした: ["虫歯の治療", "勉強", "映画鑑賞"],
-  どうだった: ["楽しかった", "普通", "つまらなかった"],
+  いつ: ["午前中", "午後", "夜", "早朝", "一日中"],
+  どこで: [
+    "歯医者",
+    "学校",
+    "自宅",
+    "映画館",
+    "図書館",
+    "カフェ",
+    "公園",
+    "ジム",
+    "職場",
+  ],
+  誰が: ["私", "友人", "家族", "同僚", "先生", "上司", "恋人", "後輩", "先輩"],
+  何をした: [
+    "虫歯の治療",
+    "勉強",
+    "映画鑑賞",
+    "料理",
+    "運動",
+    "読書",
+    "作業",
+    "休憩",
+  ],
+  どうだった: [
+    "楽しかった",
+    "普通",
+    "つまらなかった",
+    "充実していた",
+    "刺激的だった",
+    "リラックスできた",
+  ],
 };
+
 export const TagSelector = ({
   categories = samplecategories,
-  onSelect,
   onTagsChange,
 }) => {
   const [selectedTags, setSelectedTags] = useState({});
