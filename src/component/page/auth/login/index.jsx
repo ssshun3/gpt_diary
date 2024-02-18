@@ -1,8 +1,13 @@
 import { IconWithButton } from "../../../uiParts/iconwWthButton";
+import { FaGoogle } from "react-icons/fa";
 import { CiLogin } from "react-icons/ci";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import { auth } from "../../../../firebase";
 import { useNavigate, Link } from "react-router-dom";
 import { AuthContainer, AuthInput, AuthForm, WarnMessage } from "../style";
@@ -19,7 +24,6 @@ export const Login = () => {
   const onSubmit = async (data) => {
     await signInWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
-        const user = userCredential.user;
         history("/");
       })
       .catch((error) => {
@@ -30,7 +34,16 @@ export const Login = () => {
         }
       });
   };
-
+  const handleGoogleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider)
+      .then((result) => {
+        history("/");
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+  };
   return (
     <AuthContainer>
       <h1>ログイン</h1>
@@ -72,6 +85,11 @@ export const Login = () => {
         <div>
           <IconWithButton Icon={CiLogin} text="ログイン" type="submit" />
         </div>
+        <IconWithButton
+          onClick={handleGoogleLogin}
+          Icon={FaGoogle}
+          text="Googleでログイン"
+        />
         <div>
           <span>初めてご利用の方はこちら</span>
           <Link to="/auth/register">新規登録</Link>

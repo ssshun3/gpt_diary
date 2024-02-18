@@ -1,4 +1,3 @@
-import { IconWithButton } from "../../uiParts/iconwWthButton";
 import { CiCirclePlus } from "react-icons/ci";
 import React from "react";
 import { Button } from "../button/Button";
