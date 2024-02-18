@@ -80,9 +80,18 @@ export const TagSelector = ({
   };
 
   const renderSelectedTags = () => {
-    return Object.entries(selectedTags).map(([category, tags]) => (
-      <p key={category}>{`${category}: ${tags.join(", ")}`}</p>
-    ));
+    return (
+      <SelectedTagsWrapper>
+        {Object.entries(selectedTags).map(([category, tags]) => (
+          <div key={category}>
+            <CategoryTitle>{category}:</CategoryTitle>
+            {tags.map((tag) => (
+              <Tag key={tag}>{tag}</Tag>
+            ))}
+          </div>
+        ))}
+      </SelectedTagsWrapper>
+    );
   };
 
   return (
@@ -109,8 +118,6 @@ export const TagSelector = ({
 };
 
 const ContentWrapper = styled.div`
-  border: 2px solid #1ea7fd;
-  border-radius: 8px;
   width: 100%;
 `;
 
@@ -121,3 +128,21 @@ const Wrapper = styled.div`
 `;
 
 const CategoryTitle = styled.h3``;
+const SelectedTagsWrapper = styled.div`
+  margin-top: 20px;
+  background-color: #f5f5f5;
+  padding: 20px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 2px 2px 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+const Tag = styled.span`
+  display: inline-block;
+  background-color: #1ea7fd;
+  color: #fff;
+  padding: 5px 10px;
+  margin: 5px;
+  border-radius: 15px;
+  font-size: 14px;
+`;

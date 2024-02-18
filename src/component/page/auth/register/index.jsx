@@ -1,15 +1,11 @@
+import { IconWithButton } from "../../../uiParts/iconwWthButton";
+import { PiTrademarkRegisteredDuotone } from "react-icons/pi";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../../firebase";
 import { useNavigate, Link } from "react-router-dom";
-import {
-  AuthContainer,
-  AuthButton,
-  AuthInput,
-  AuthForm,
-  WarnMessage,
-} from "../style";
+import { AuthContainer, AuthInput, AuthForm, WarnMessage } from "../style";
 
 export const Register = () => {
   const history = useNavigate();
@@ -73,7 +69,11 @@ export const Register = () => {
         </div>
 
         <div>
-          <AuthButton type="submit">新規登録</AuthButton>
+          <IconWithButton
+            Icon={PiTrademarkRegisteredDuotone}
+            text="新規登録"
+            type="submit"
+          />
         </div>
         <div>
           <span>既にアカウントをお持ちですか？</span>

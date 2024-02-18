@@ -1,3 +1,6 @@
+import { IconWithButton } from "../../uiParts/iconwWthButton";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import { BiArrowToBottom } from "react-icons/bi";
 import { useLocation, useNavigate } from "react-router-dom";
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
@@ -53,24 +56,41 @@ export const SubmitDiary = () => {
       console.error("Error adding document: ", error);
     }
   };
+  const backToHome = () => {
+    navigate("/create-diary");
+  };
   return (
     <Wrapper>
-      <p>日付:</p>
-      <div>
-        <DatePicker
-          locale="ja"
-          selected={selectedDate}
-          dateFormatCalendar="yyyy年 MM月"
-          dateFormat="yyyy/MM/dd"
-          onChange={handleDateChange}
-        />
-      </div>
-      <StyledTextArea
-        ref={textareaRef}
-        value={diaryContent}
-        onChange={(e) => setDiaryContent(e.target.value)}
+      <IconWithButton
+        Icon={IoMdArrowRoundBack}
+        text="戻る"
+        onClick={backToHome}
       />
-      <button onClick={() => onSubmit()}>保存</button>
+      <h1>日記を書く</h1>
+      <ContentWrapper>
+        <DatePickerWrapper className={"ReservationCalendar"}>
+          <p>日付</p>
+          <StyledDatePicker
+            locale="ja"
+            selected={selectedDate}
+            dateFormatCalendar="yyyy年 MM月"
+            dateFormat="yyyy/MM/dd"
+            onChange={handleDateChange}
+          />
+        </DatePickerWrapper>
+        <StyledTextArea
+          ref={textareaRef}
+          value={diaryContent}
+          onChange={(e) => setDiaryContent(e.target.value)}
+        />
+        <SubmitButtonWrapper>
+          <IconWithButton
+            Icon={BiArrowToBottom}
+            text="保存する"
+            onClick={() => onSubmit()}
+          />
+        </SubmitButtonWrapper>
+      </ContentWrapper>
     </Wrapper>
   );
 };
@@ -84,8 +104,65 @@ const StyledTextArea = styled.textarea`
   resize: none;
   overflow: hidden;
   min-height: 100px;
+  border-radius: 5px;
 `;
 
 const Wrapper = styled.div`
-  padding: 20px 60px;
+  padding: 20px 30px;
+`;
+const StyledDatePicker = styled(DatePicker)`
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+
+  & .react-datepicker__input-container {
+    width: 100%;
+  }
+
+  & .react-datepicker__month-container {
+    background-color: #f0f0f0;
+  }
+
+  & .react-datepicker__header {
+    background-color: #007bff;
+    color: white;
+  }
+
+  & .react-datepicker__day-name,
+  .react-datepicker__day,
+  .react-datepicker__time-name {
+    width: 2.5rem;
+    line-height: 2.5rem;
+    margin: 0.166rem;
+  }
+
+  & .react-datepicker__day--selected,
+  .react-datepicker__day--in-range,
+  .react-datepicker__day--in-selecting-range {
+    background-color: #007bff;
+    color: white;
+  }
+
+  & .react-datepicker__day--keyboard-selected {
+    background-color: #007bff;
+    color: white;
+  }
+`;
+
+const DatePickerWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+const SubmitButtonWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `;

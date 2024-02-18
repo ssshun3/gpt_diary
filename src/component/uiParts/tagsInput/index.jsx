@@ -1,3 +1,5 @@
+import { IconWithButton } from "../../uiParts/iconwWthButton";
+import { CiCirclePlus } from "react-icons/ci";
 import React from "react";
 import { Button } from "../button/Button";
 import styled from "styled-components";
@@ -27,15 +29,18 @@ export const TagsInput = ({
           </Button>
         ))}
       </ButtonWrapper>
-      <div>
+      <AddTagWrapper>
         <CustomTagInput
           type="text"
-          placeholder="カスタムタグを追加"
+          placeholder="好きなタグを追加する"
           value={customTag[category] || ""}
           onChange={(e) => handleCustomTagChange(category, e.target.value)}
         />
-        <button onClick={() => handleAddCustomTag(category)}>タグ追加</button>
-      </div>
+        <StyledIconWithButton onClick={() => handleAddCustomTag(category)}>
+          <CiCirclePlus />
+          作成
+        </StyledIconWithButton>
+      </AddTagWrapper>
     </Wrapper>
   );
 };
@@ -60,4 +65,28 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+`;
+
+const AddTagWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const StyledIconWithButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #495057;
+  color: white;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  gap: 5px;
+  &:hover {
+    background-color: #343a40;
+  }
+  svg {
+    font-size: 20px;
+  }
 `;

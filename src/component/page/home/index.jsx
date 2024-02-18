@@ -1,3 +1,8 @@
+import { IconWithButton } from "../../uiParts/iconwWthButton";
+import { CiLogout } from "react-icons/ci";
+import { CiEdit } from "react-icons/ci";
+import { FaBook } from "react-icons/fa";
+import { MdDeleteForever } from "react-icons/md";
 import {
   collection,
   query,
@@ -7,12 +12,12 @@ import {
   deleteDoc,
   doc,
 } from "firebase/firestore";
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../../../firebase";
 import { useAppContext } from "../../../context/AppContext";
 import { ConfirmModal } from "../../uiParts/modal";
+import styled from "styled-components";
 
 export const Home = () => {
   const { user, userID } = useAppContext();
@@ -50,7 +55,11 @@ export const Home = () => {
   useEffect(() => {
     let sorted = [...diaries];
     if (sortOption === "default") {
-      sorted.sort((a, b) => b.createdAt.toDate() - a.createdAt.toDate());
+      sorted.sort(
+        (a, b) =>
+          (b.createdAt?.toDate() || new Date()) -
+          (a.createdAt?.toDate() || new Date())
+      );
     } else if (sortOption === "date") {
       sorted.sort((a, b) => {
         const dateA = new Date(a.date.replace(/年|月/g, "/").replace(/日/, ""));
@@ -58,7 +67,11 @@ export const Home = () => {
         return dateB - dateA;
       });
     } else if (sortOption === "updated") {
-      sorted.sort((a, b) => b.updatedAt.toDate() - a.updatedAt.toDate());
+      sorted.sort(
+        (a, b) =>
+          (b.updatedAt?.toDate() || new Date()) -
+          (a.updatedAt?.toDate() || new Date())
+      );
     }
     setSortedDiaries(sorted);
   }, [sortOption, diaries]);
@@ -79,20 +92,11 @@ export const Home = () => {
     setCurrentDiaryId(diaryId);
     setIsModalOpen(true);
   };
-  // const handleDeleteDiary = async (diaryId) => {
-  //   try {
-  //     await deleteDoc(doc(db, "diaries", diaryId));
-  //   } catch (error) {
-  //     console.error("Error deleting diary: ", error);
-  //   }
-  // };
   const handleConfirmDelete = async (diaryId) => {
     try {
       await deleteDoc(doc(db, "diaries", diaryId));
-      // モーダルを閉じるなどの後処理
       setIsModalOpen(false);
       setCurrentDiaryId(null);
-      // 削除後の日記リストの更新処理が必要であればここに追加
     } catch (error) {
       console.error("Error deleting diary: ", error);
       setIsModalOpen(false);
@@ -101,19 +105,31 @@ export const Home = () => {
   };
 
   return (
-    <div>
-      {user && <p>{user.email}</p>}
-      <button onClick={handleLogout}>ログアウト</button>
+    <Wrapper>
+      <UserWrapper>
+        {user && <p>{user.email}</p>}
+        <IconWithButton
+          Icon={CiLogout}
+          text="ログアウト"
+          onClick={handleLogout}
+        />
+      </UserWrapper>
       <h1>日記一覧</h1>
-      <select
-        value={sortOption}
-        onChange={(e) => setSortOption(e.target.value)}
-      >
-        <option value="default">作成順</option>
-        <option value="date">日付順</option>
-        <option value="updated">更新順</option>
-      </select>
-      <button onClick={handleCreateDiaryClick}>日記を作成</button>
+      <HeaderWrapper>
+        <StyledSelect
+          value={sortOption}
+          onChange={(e) => setSortOption(e.target.value)}
+        >
+          <option value="default">作成順</option>
+          <option value="date">日付順</option>
+          <option value="updated">更新順</option>
+        </StyledSelect>{" "}
+        <IconWithButton
+          Icon={FaBook}
+          text="日記を作成する"
+          onClick={handleCreateDiaryClick}
+        />
+      </HeaderWrapper>
       <ConfirmModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -121,25 +137,94 @@ export const Home = () => {
         diaryId={currentDiaryId}
       />
       {sortedDiaries.map((diary) => (
-        <div key={diary.id}>
-          <p>{diary.date}</p>
-          <p>{diary.content}</p>
-          <button
-            onClick={() =>
-              navigate("/edit-diary", {
-                state: {
-                  diaryId: diary.id,
-                  diaryContent: diary.content,
-                  selectedDate: diary.date,
-                },
-              })
-            }
-          >
-            編集
-          </button>
-          <button onClick={() => handleDeleteClick(diary.id)}>削除</button>
-        </div>
+        <DiaryWrapper key={diary.id}>
+          <DiaryDate>{diary.date}</DiaryDate>
+          <DiaryContent>{diary.content}</DiaryContent>
+          <ButtonWrapper>
+            <IconWithButton
+              Icon={CiEdit}
+              text="編集する"
+              onClick={() =>
+                navigate("/edit-diary", {
+                  state: {
+                    diaryId: diary.id,
+                    diaryContent: diary.content,
+                    selectedDate: diary.date,
+                  },
+                })
+              }
+            />
+            <IconWithButton
+              Icon={MdDeleteForever}
+              text="削除する"
+              onClick={() => handleDeleteClick(diary.id)}
+            />
+          </ButtonWrapper>
+        </DiaryWrapper>
       ))}
-    </div>
+    </Wrapper>
   );
 };
+
+const UserWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+const StyledSelect = styled.select`
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 16px;
+  cursor: pointer;
+  outline: none;
+  margin: 10px;
+  transition: border-color 0.2s ease-in-out;
+
+  &:hover {
+    border-color: #888;
+  }
+
+  &:focus {
+    border-color: #0052cc;
+    box-shadow: 0 0 0 1px #0052cc;
+  }
+`;
+
+const DiaryWrapper = styled.div`
+  background-color: #f5f5f5;
+  padding: 20px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 2px 2px 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+const DiaryDate = styled.p`
+  color: #666;
+  font-size: 14px;
+`;
+
+const DiaryContent = styled.p`
+  color: #333;
+  font-size: 16px;
+  margin-top: 10px;
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+`;
+
+const Wrapper = styled.div`
+  padding: 20px 30px;
+`;
+
+const HeaderWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+`;

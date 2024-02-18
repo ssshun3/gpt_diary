@@ -1,3 +1,8 @@
+import { IconWithButton } from "../../uiParts/iconwWthButton";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import { MdCancel } from "react-icons/md";
+import { MdNoteAdd } from "react-icons/md";
+import { IoMdCreate } from "react-icons/io";
 import React, { useState } from "react";
 import { TagSelector } from "../../project/tagSelector";
 import styled, { keyframes } from "styled-components";
@@ -94,39 +99,58 @@ export const CreateDiary = () => {
       setIsLoading(false);
     }
   };
-
+  const backToHome = () => {
+    history("/");
+  };
   return (
     <Wrapper>
       {isLoading ? (
-        <>
+        <CenteredWrapper>
           <Loader />
           <p>日記を作成中...</p>
-        </>
+        </CenteredWrapper>
       ) : (
         <>
+          <BackButton>
+            <IconWithButton
+              Icon={IoMdArrowRoundBack}
+              text="戻る"
+              onClick={backToHome}
+            />
+          </BackButton>
           <h1>タグを選んで日記を作成</h1>
           <DatePickerWrapper className={"ReservationCalendar"}>
-            <p>日付:</p>
-            <div>
-              <DatePicker
-                locale="ja"
-                selected={selectedDate}
-                dateFormatCalendar="yyyy年 MM月"
-                dateFormat="yyyy/MM/dd"
-                onChange={(date) => setSelectedDate(date)}
-              />
-            </div>
+            <p>日付を選択</p>
+            <StyledDatePicker
+              locale="ja"
+              selected={selectedDate}
+              dateFormatCalendar="yyyy年 MM月"
+              dateFormat="yyyy/MM/dd"
+              onChange={(date) => setSelectedDate(date)}
+            />
           </DatePickerWrapper>
           {tagSelectors.map((selector) => (
-            <div key={selector.id}>
+            <ContentWrapper key={selector.id}>
               {selector.component}
-              <button onClick={() => removeTagSelector(selector.id)}>
-                取消
-              </button>
-            </div>
+              <IconWithButton
+                Icon={MdCancel}
+                text=" エピソードを取消"
+                onClick={() => removeTagSelector(selector.id)}
+              />
+            </ContentWrapper>
           ))}
-          <button onClick={addTagSelector}>エピソードを追加</button>
-          <button onClick={handleSubmitTags}>タグを提出</button>
+          <ButtonWrapper>
+            <IconWithButton
+              Icon={MdNoteAdd}
+              text="エピソードを追加する"
+              onClick={addTagSelector}
+            />
+            <IconWithButton
+              Icon={IoMdCreate}
+              text="日記を作成する"
+              onClick={handleSubmitTags}
+            />
+          </ButtonWrapper>
         </>
       )}
     </Wrapper>
@@ -137,24 +161,100 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 20px 40px;
+  padding: 20px 30px;
+`;
+
+const StyledDatePicker = styled(DatePicker)`
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+
+  & .react-datepicker__input-container {
+    width: 100%;
+  }
+
+  & .react-datepicker__month-container {
+    background-color: #f0f0f0;
+  }
+
+  & .react-datepicker__header {
+    background-color: #007bff;
+    color: white;
+  }
+
+  & .react-datepicker__day-name,
+  .react-datepicker__day,
+  .react-datepicker__time-name {
+    width: 2.5rem;
+    line-height: 2.5rem;
+    margin: 0.166rem;
+  }
+
+  & .react-datepicker__day--selected,
+  .react-datepicker__day--in-range,
+  .react-datepicker__day--in-selecting-range {
+    background-color: #007bff;
+    color: white;
+  }
+
+  & .react-datepicker__day--keyboard-selected {
+    background-color: #007bff;
+    color: white;
+  }
 `;
 
 const DatePickerWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 `;
 
 const spin = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 `;
+
 const Loader = styled.div`
-  border: 5px solid #f3f3f3;
-  border-top: 5px solid #3498db;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
   border-radius: 50%;
   width: 50px;
   height: 50px;
-  animation: ${spin} 1s linear infinite;
+  animation: ${spin} 2s linear infinite;
+`;
+const CenteredWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 5px;
+`;
+
+const ContentWrapper = styled.div`
+  border: 2px solid #1ea7fd;
+  border-radius: 8px;
+  padding: 10px;
+`;
+
+const BackButton = styled.div`
+  width: fit-content;
 `;

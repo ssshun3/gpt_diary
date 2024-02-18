@@ -1,3 +1,6 @@
+import { IconWithButton } from "../../uiParts/iconwWthButton";
+import { BiArrowToBottom } from "react-icons/bi";
+import { IoMdArrowRoundBack } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
@@ -77,26 +80,41 @@ export const EditDiary = () => {
       console.error("Error updating document: ", error);
     }
   };
-
+  const backToHome = () => {
+    navigate("/");
+  };
   return (
     <Wrapper>
-      <h1>日記を編集</h1>
-      <p>日付:</p>
-      <div>
-        <DatePicker
-          locale="ja"
-          selected={selectedDate}
-          dateFormatCalendar="yyyy年 MM月"
-          dateFormat="yyyy/MM/dd"
-          onChange={handleDateChange}
-        />
-      </div>
-      <StyledTextArea
-        ref={textareaRef}
-        value={diaryContent}
-        onChange={(e) => setDiaryContent(e.target.value)}
+      <IconWithButton
+        Icon={IoMdArrowRoundBack}
+        text="戻る"
+        onClick={backToHome}
       />
-      <button onClick={() => onSubmit()}>更新</button>
+      <h1>日記を編集</h1>
+      <ContentWrapper>
+        <DateWrapper>
+          <p>日付</p>
+          <DatePicker
+            locale="ja"
+            selected={selectedDate}
+            dateFormatCalendar="yyyy年 MM月"
+            dateFormat="yyyy/MM/dd"
+            onChange={handleDateChange}
+          />
+        </DateWrapper>
+        <StyledTextArea
+          ref={textareaRef}
+          value={diaryContent}
+          onChange={(e) => setDiaryContent(e.target.value)}
+        />
+        <SubmitButtonWrapper>
+          <IconWithButton
+            Icon={BiArrowToBottom}
+            text="更新する"
+            onClick={() => onSubmit()}
+          />
+        </SubmitButtonWrapper>
+      </ContentWrapper>
     </Wrapper>
   );
 };
@@ -110,8 +128,26 @@ const StyledTextArea = styled.textarea`
   resize: none;
   overflow: hidden;
   min-height: 100px;
+  border-radius: 5px;
 `;
 
 const Wrapper = styled.div`
-  padding: 20px 60px;
+  padding: 20px 30px;
+`;
+
+const SubmitButtonWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const DateWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `;
