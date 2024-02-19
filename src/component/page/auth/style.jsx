@@ -48,3 +48,15 @@ export const WarnMessage = styled.span`
   font-size: 14px;
   line-height: 25px;
 `;
+
+export const PrivacyPolicyLink = styled.div`
+  color: gray;
+  text-decoration: underline;
+`;
+
+export const PrivacyPolicyWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+`;

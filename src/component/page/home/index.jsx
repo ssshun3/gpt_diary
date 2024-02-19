@@ -1,6 +1,7 @@
 import { IconWithButton } from "../../uiParts/iconwWthButton";
 import { CiLogout } from "react-icons/ci";
 import { CiEdit } from "react-icons/ci";
+import { MdOutlinePrivacyTip } from "react-icons/md";
 import { FaBook } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import {
@@ -18,6 +19,8 @@ import { auth, db } from "../../../firebase";
 import { useAppContext } from "../../../context/AppContext";
 import { ConfirmModal } from "../../uiParts/modal";
 import styled from "styled-components";
+import { PrivacyPolicyModal } from "../../project/PrivacyPolicyModal";
+import { PrivacyPolicyLink, PrivacyPolicyWrapper } from "../auth/style";
 
 export const Home = () => {
   const { user, userID } = useAppContext();
@@ -106,64 +109,74 @@ export const Home = () => {
 
   return (
     <Wrapper>
-      <UserWrapperWrapper>
-        <UserWrapper>
-          {user && <p>{user.email}</p>}
+      <BodyWrapper>
+        <UserWrapperWrapper>
+          <UserWrapper>
+            {user && <p>{user.email}</p>}
+            <IconWithButton
+              Icon={CiLogout}
+              text="ログアウト"
+              onClick={handleLogout}
+            />
+          </UserWrapper>
+        </UserWrapperWrapper>
+        <h1>日記一覧</h1>
+        <HeaderWrapper>
+          <StyledSelect
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+          >
+            <option value="default">作成順</option>
+            <option value="date">日付順</option>
+            <option value="updated">更新順</option>
+          </StyledSelect>{" "}
           <IconWithButton
-            Icon={CiLogout}
-            text="ログアウト"
-            onClick={handleLogout}
+            Icon={FaBook}
+            text="日記を作成する"
+            onClick={handleCreateDiaryClick}
           />
-        </UserWrapper>
-      </UserWrapperWrapper>
-      <h1>日記一覧</h1>
-      <HeaderWrapper>
-        <StyledSelect
-          value={sortOption}
-          onChange={(e) => setSortOption(e.target.value)}
-        >
-          <option value="default">作成順</option>
-          <option value="date">日付順</option>
-          <option value="updated">更新順</option>
-        </StyledSelect>{" "}
-        <IconWithButton
-          Icon={FaBook}
-          text="日記を作成する"
-          onClick={handleCreateDiaryClick}
+        </HeaderWrapper>
+        <ConfirmModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={handleConfirmDelete}
+          diaryId={currentDiaryId}
         />
-      </HeaderWrapper>
-      <ConfirmModal
+        {sortedDiaries.map((diary) => (
+          <DiaryWrapper key={diary.id}>
+            <DiaryDate>{diary.date}</DiaryDate>
+            <DiaryContent>{diary.content}</DiaryContent>
+            <ButtonWrapper>
+              <IconWithButton
+                Icon={CiEdit}
+                text="編集する"
+                onClick={() =>
+                  navigate("/edit-diary", {
+                    state: {
+                      diaryId: diary.id,
+                      diaryContent: diary.content,
+                      selectedDate: diary.date,
+                    },
+                  })
+                }
+              />
+              <IconWithButton
+                Icon={MdDeleteForever}
+                text="削除する"
+                onClick={() => handleDeleteClick(diary.id)}
+              />
+            </ButtonWrapper>
+          </DiaryWrapper>
+        ))}
+      </BodyWrapper>
+      <PrivacyPolicyWrapper onClick={() => setIsModalOpen(true)}>
+        <MdOutlinePrivacyTip />
+        <PrivacyPolicyLink>プライバシーポリシー</PrivacyPolicyLink>
+      </PrivacyPolicyWrapper>
+      <PrivacyPolicyModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onConfirm={handleConfirmDelete}
-        diaryId={currentDiaryId}
       />
-      {sortedDiaries.map((diary) => (
-        <DiaryWrapper key={diary.id}>
-          <DiaryDate>{diary.date}</DiaryDate>
-          <DiaryContent>{diary.content}</DiaryContent>
-          <ButtonWrapper>
-            <IconWithButton
-              Icon={CiEdit}
-              text="編集する"
-              onClick={() =>
-                navigate("/edit-diary", {
-                  state: {
-                    diaryId: diary.id,
-                    diaryContent: diary.content,
-                    selectedDate: diary.date,
-                  },
-                })
-              }
-            />
-            <IconWithButton
-              Icon={MdDeleteForever}
-              text="削除する"
-              onClick={() => handleDeleteClick(diary.id)}
-            />
-          </ButtonWrapper>
-        </DiaryWrapper>
-      ))}
     </Wrapper>
   );
 };
@@ -209,6 +222,10 @@ const DiaryWrapper = styled.div`
   box-shadow: 2px 2px 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
+const BodyWrapper = styled.div`
+  flex-grow: 1;
+`;
+
 const DiaryDate = styled.p`
   color: #666;
   font-size: 14px;
@@ -229,6 +246,9 @@ const ButtonWrapper = styled.div`
 
 const Wrapper = styled.div`
   padding: 20px 30px;
+  display: flex;
+  flex-direction: column;
+  height: 97vh;
 `;
 
 const HeaderWrapper = styled.div`

@@ -1,13 +1,24 @@
 import { IconWithButton } from "../../../uiParts/iconwWthButton";
+import { MdOutlinePrivacyTip } from "react-icons/md";
 import { PiTrademarkRegisteredDuotone } from "react-icons/pi";
-import React from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../../firebase";
 import { useNavigate, Link } from "react-router-dom";
-import { AuthContainer, AuthInput, AuthForm, WarnMessage } from "../style";
+import {
+  AuthContainer,
+  AuthInput,
+  AuthForm,
+  WarnMessage,
+  PrivacyPolicyLink,
+  PrivacyPolicyWrapper,
+} from "../style";
+import { PrivacyPolicyModal } from "../../../project/PrivacyPolicyModal";
 
 export const Register = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const history = useNavigate();
   const {
     register,
@@ -80,6 +91,14 @@ export const Register = () => {
           <Link to="/auth/login">ログインページへ</Link>
         </div>
       </AuthForm>
+      <PrivacyPolicyWrapper onClick={() => setIsModalOpen(true)}>
+        <MdOutlinePrivacyTip />
+        <PrivacyPolicyLink>プライバシーポリシー</PrivacyPolicyLink>
+      </PrivacyPolicyWrapper>
+      <PrivacyPolicyModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </AuthContainer>
   );
 };

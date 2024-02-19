@@ -1,5 +1,6 @@
 import { IconWithButton } from "../../../uiParts/iconwWthButton";
 import { FaGoogle } from "react-icons/fa";
+import { MdOutlinePrivacyTip } from "react-icons/md";
 import { CiLogin } from "react-icons/ci";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -8,13 +9,22 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
+import { useState } from "react";
 import { auth } from "../../../../firebase";
 import { useNavigate, Link } from "react-router-dom";
-import { AuthContainer, AuthInput, AuthForm, WarnMessage } from "../style";
+import {
+  AuthContainer,
+  AuthInput,
+  AuthForm,
+  WarnMessage,
+  PrivacyPolicyLink,
+  PrivacyPolicyWrapper,
+} from "../style";
+import { PrivacyPolicyModal } from "../../../project/PrivacyPolicyModal";
 
 export const Login = () => {
   const history = useNavigate();
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     register,
     handleSubmit,
@@ -95,6 +105,14 @@ export const Login = () => {
           <Link to="/auth/register">新規登録</Link>
         </div>
       </AuthForm>
+      <PrivacyPolicyWrapper onClick={() => setIsModalOpen(true)}>
+        <MdOutlinePrivacyTip />
+        <PrivacyPolicyLink>プライバシーポリシー</PrivacyPolicyLink>
+      </PrivacyPolicyWrapper>
+      <PrivacyPolicyModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </AuthContainer>
   );
 };
