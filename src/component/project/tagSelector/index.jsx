@@ -98,7 +98,7 @@ export const TagSelector = ({
     <ContentWrapper>
       <Wrapper>
         {Object.entries(categories).map(([category, tags]) => (
-          <div key={category}>
+          <TitleTagWrapper key={category}>
             <CategoryTitle>{category}</CategoryTitle>
             <TagsInput
               tags={tags}
@@ -109,7 +109,7 @@ export const TagSelector = ({
               handleCustomTagChange={handleCustomTagChange}
               handleAddCustomTag={handleAddCustomTag}
             />
-          </div>
+          </TitleTagWrapper>
         ))}
         <div>{renderSelectedTags()}</div>
       </Wrapper>
@@ -122,12 +122,13 @@ const ContentWrapper = styled.div`
 `;
 
 const Wrapper = styled.div`
-  padding: 10px;
   display: flex;
   flex-direction: column;
 `;
 
-const CategoryTitle = styled.h3``;
+const CategoryTitle = styled.h3`
+  margin: 8px;
+`;
 const SelectedTagsWrapper = styled.div`
   margin-top: 20px;
   background-color: #f5f5f5;
@@ -145,4 +146,8 @@ const Tag = styled.span`
   margin: 5px;
   border-radius: 15px;
   font-size: 14px;
+`;
+
+const TitleTagWrapper = styled.div`
+  padding: 5px 0 5px 0;
 `;
