@@ -106,7 +106,7 @@ export const Home = () => {
       setCurrentDiaryId(null);
     }
   };
-
+  const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
   return (
     <Wrapper>
       <BodyWrapper>
@@ -169,13 +169,13 @@ export const Home = () => {
           </DiaryWrapper>
         ))}
       </BodyWrapper>
-      <PrivacyPolicyWrapper onClick={() => setIsModalOpen(true)}>
+      <PrivacyPolicyWrapper onClick={() => setIsPrivacyModalOpen(true)}>
         <MdOutlinePrivacyTip />
         <PrivacyPolicyLink>プライバシーポリシー</PrivacyPolicyLink>
       </PrivacyPolicyWrapper>
       <PrivacyPolicyModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isPrivacyModalOpen}
+        onClose={() => setIsPrivacyModalOpen(false)}
       />
     </Wrapper>
   );
